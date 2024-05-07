@@ -88,7 +88,7 @@
 
 <script>
 export default {
-    data() {
+    data () {
         return {
             name: '',
             email: '',
