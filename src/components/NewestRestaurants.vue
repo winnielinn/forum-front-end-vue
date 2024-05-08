@@ -10,7 +10,7 @@
         <p>
             {{ restaurant.description }}
         </p>
-        {{ restaurant.createdAt }}
+        {{ restaurant.createdAt | fromNow }}
         <hr />
       </div>
     </div>
@@ -18,11 +18,22 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   props: {
     restaurants: {
       type: Array, // 進來的資料型態是陣列
       required: true, // 這組資料是必要的
+    },
+  },
+  filters: {
+    fromNow (dataTime) {
+      if (!dataTime) {
+        return '-';
+      }
+
+      return moment(dataTime).fromNow();
     },
   },
 };
