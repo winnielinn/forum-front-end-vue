@@ -15,7 +15,7 @@
         >
             <router-link
                 class="nav-link"
-                v-bind:to="{ name: 'restaurants', query: { category: category.id } }"
+                v-bind:to="{ name: 'restaurants', query: { categoryId: category.id } }"
             >
                 {{ category.name }}
             </router-link>
@@ -25,9 +25,10 @@
 
 <script>
 export default {
+    name: "RestaurantsNavPills",
     props: {
         categories: {
-            tpye: Array,
+            type: Array,
             required: true
         }
     }
