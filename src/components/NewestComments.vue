@@ -4,6 +4,7 @@
     <div class="card-body">
       <div v-for="comment in comments" v-bind:key="comment.id">
         <h4>
+          <!-- :to="{ name: 'restaurant', params: {id: comment.Restaurant.id}}" -->
           <router-link :to="`/restaurants/${comment.Restaurant.id}`">
             {{ comment.Restaurant.name }}
           </router-link>

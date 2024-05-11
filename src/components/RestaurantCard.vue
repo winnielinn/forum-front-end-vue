@@ -10,6 +10,7 @@
       />
       <div class="card-body">
         <p class="card-text title-wrap">
+          <!-- :to="{ name: 'restaurant', params: { id: restaurant.id }}" -->
           <router-link :to="`/restaurants/${restaurant.id}`" >{{ restaurant.name }}</router-link>
         </p>
         <span class="badge badge-secondary">{{
