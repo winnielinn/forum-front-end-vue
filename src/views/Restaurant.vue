@@ -3,11 +3,14 @@
     <h1>餐廳描述頁</h1>
     <RestaurantDetail v-bind:restaurant="restaurant" />
     <hr />
-    <!-- 餐廳評論 RestaurantComments -->
     <RestaurantComments
       v-bind:restaurantComments="restaurantComments"
       v-bind:currentUser="currentUser"
       v-on:after-delete-comment="afterDeleteComment"
+    />
+    <CreateComment
+      v-bind:restaurantId="restaurant.id"
+      v-on:after-create-comment="afterCreateComment"
     />
   </div>
 </template>
@@ -15,6 +18,7 @@
 <script>
 import RestaurantDetail from "../components/RestaurantDetail.vue";
 import RestaurantComments from "../components/RestaurantComments.vue";
+import CreateComment from "../components/CreateComment.vue";
 
 const dummyUser = {
   currentUser: {
@@ -96,14 +100,14 @@ export default {
   components: {
     RestaurantDetail,
     RestaurantComments,
+    CreateComment,
   },
   created() {
     const { id } = this.$route.params;
     this.fetchRestaurant(id);
   },
   methods: {
-    fetchRestaurant(restaurantId) {
-      console.log(restaurantId);
+    fetchRestaurant() {
       const { restaurant, isFavorited, isLiked } = dummyData;
       const {
         id,
@@ -135,6 +139,19 @@ export default {
         (comment) => comment.id !== commentId
       );
     },
+    afterCreateComment(payload) {
+      const { commentId, restaurantId, text } = payload;
+      this.restaurantComments.push({
+        id: commentId,
+        User: {
+          id: this.currentUser.id,
+          name: this.currentUser.name,
+        },
+        RestaurantId: restaurantId,
+        text,
+        createdAt: new Date()
+      })
+    }
   },
 };
 </script>
