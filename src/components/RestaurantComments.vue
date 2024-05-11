@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 class="my-4">
-      所有評論：
-    </h2>
+    <h2 class="my-4">所有評論：</h2>
 
     <div v-for="comment in restaurantComments" v-bind:key="comment.id">
       <blockquote class="blockquote mb-0">
@@ -15,7 +13,7 @@
           Delete
         </button>
         <h3>
-          <router-link :to="'#'">
+          <router-link :to="{ name: 'user', params: { id: comment.User.id } }">
             {{ comment.User.name }}
           </router-link>
         </h3>
@@ -24,30 +22,30 @@
           {{ comment.createdAt | fromNow }}
         </footer>
       </blockquote>
-      <hr>
+      <hr />
     </div>
   </div>
 </template>
 
 <script>
-import { fromNowFilter } from './../utils/mixins'
+import { fromNowFilter } from "./../utils/mixins";
 
 export default {
   props: {
     restaurantComments: {
       type: Array,
-      required: true
+      required: true,
     },
     currentUser: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
-    handleDeleteButtonClick (commentId) {
-      this.$emit('after-delete-comment', commentId)
-    }
+    handleDeleteButtonClick(commentId) {
+      this.$emit("after-delete-comment", commentId);
+    },
   },
-  mixins: [fromNowFilter]
-}
+  mixins: [fromNowFilter],
+};
 </script>
