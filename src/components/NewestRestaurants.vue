@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import { fromNowFilter } from './../utils/mixins'
 
 export default {
   props: {
@@ -27,15 +27,7 @@ export default {
       required: true, // 這組資料是必要的
     },
   },
-  filters: {
-    fromNow (dataTime) {
-      if (!dataTime) {
-        return '-';
-      }
-
-      return moment(dataTime).fromNow();
-    },
-  },
+  mixins: [fromNowFilter],
 };
 </script>
 

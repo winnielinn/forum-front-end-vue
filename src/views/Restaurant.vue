@@ -4,12 +4,27 @@
     <RestaurantDetail v-bind:restaurant="restaurant"/>
     <hr />
     <!-- 餐廳評論 RestaurantComments -->
-    <!-- 新增評論 CreateComment -->
+    <RestaurantComments 
+      v-bind:restaurantComments="restaurantComments"
+      v-bind:currentUser="currentUser"
+    />
   </div>
 </template>
 
 <script>
 import RestaurantDetail from '../components/RestaurantDetail.vue';
+import RestaurantComments from '../components/RestaurantComments.vue';
+
+const dummyUser = {
+  currentUser: {
+    id: 1,
+    name: '管理者',
+    email: 'root@example.com',
+    image: 'https://i.pravatar.cc/300',
+    isAdmin: true
+  },
+  isAuthenticated: true
+}
 
 const dummyData = {
   restaurant: {
@@ -74,10 +89,12 @@ export default {
         isLiked: false,
       },
       restaurantComments: [],
+      currentUser: dummyUser.currentUser
     };
   },
   components: {
-    RestaurantDetail
+    RestaurantDetail,
+    RestaurantComments,
   },
   created() {
     const { id } = this.$route.params;

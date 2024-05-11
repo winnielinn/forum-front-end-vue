@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import { fromNowFilter } from './../utils/mixins'
 
 export default {
   props: {
@@ -28,14 +28,6 @@ export default {
       required: true,
     },
   },
-  filters: {
-    fromNow(dataTime) {
-        if (!dataTime) {
-            return '-';
-        }
-
-        return `at ${moment(dataTime).fromNow()}`;
-    }
-  }
+  mixins: [fromNowFilter],
 };
 </script>
