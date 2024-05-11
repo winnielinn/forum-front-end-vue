@@ -12,7 +12,9 @@
           v-bind:followings="followings"
         />
 
-        <!-- UserFollowersCard -->
+        <UserFollowersCard
+          v-bind:followers="followers"
+        />
       </div>
       <div class="col-md-8">
         <!-- UserCommentsCard -->
@@ -26,6 +28,7 @@
 <script>
 import UserProfileCard from "../components/UserProfileCard.vue";
 import UserFollowingsCard from "../components/UserFollowingsCard.vue";
+import UserFollowersCard from "../components/UserFollowersCard.vue";
 
 const dummyData = {
   profile: {
@@ -1300,7 +1303,8 @@ export default {
   name: "user",
   components: {
     UserProfileCard,
-    UserFollowingsCard
+    UserFollowingsCard,
+    UserFollowersCard
   },
   data() {
     return {
