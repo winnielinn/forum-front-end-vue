@@ -31,16 +31,44 @@
     </div>
     <div class="col-lg-8">
       <p>{{ restaurant.description }}</p>
-      <router-link class="btn btn-primary btn-border mr-2" :to="'#'">Dashboard</router-link>
+      <router-link
+        class="btn btn-primary btn-border mr-2"
+        :to="`/restaurants/${restaurant.id}/dashboard`"
+        >Dashboard</router-link
+      >
 
-      <button v-if="restaurant.isFavorited" @click.stop.prevent="removeFavorite" type="button" class="btn btn-danger btn-border mr-2">
+      <button
+        v-if="restaurant.isFavorited"
+        @click.stop.prevent="removeFavorite"
+        type="button"
+        class="btn btn-danger btn-border mr-2"
+      >
         移除最愛
       </button>
-      <button v-else @click.stop.prevent="addFavorite" type="button" class="btn btn-primary btn-border mr-2">
+      <button
+        v-else
+        @click.stop.prevent="addFavorite"
+        type="button"
+        class="btn btn-primary btn-border mr-2"
+      >
         加到最愛
       </button>
-      <button v-if="restaurant.isLiked" @click.stop.prevent="removeLike" type="button" class="btn btn-danger like mr-2">Unlike</button>
-      <button v-else @click.stop.prevent="addLike" type="button" class="btn btn-primary like mr-2">Like</button>
+      <button
+        v-if="restaurant.isLiked"
+        @click.stop.prevent="removeLike"
+        type="button"
+        class="btn btn-danger like mr-2"
+      >
+        Unlike
+      </button>
+      <button
+        v-else
+        @click.stop.prevent="addLike"
+        type="button"
+        class="btn btn-primary like mr-2"
+      >
+        Like
+      </button>
     </div>
   </div>
 </template>
@@ -78,6 +106,6 @@ export default {
         isLiked: false,
       };
     },
-  }
+  },
 };
 </script>
