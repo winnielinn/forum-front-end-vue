@@ -1,30 +1,31 @@
 <template>
   <div class="container py-5">
     <h1>餐廳描述頁</h1>
-    <RestaurantDetail v-bind:restaurant="restaurant"/>
+    <RestaurantDetail v-bind:restaurant="restaurant" />
     <hr />
     <!-- 餐廳評論 RestaurantComments -->
-    <RestaurantComments 
+    <RestaurantComments
       v-bind:restaurantComments="restaurantComments"
       v-bind:currentUser="currentUser"
+      v-on:after-delete-comment="afterDeleteComment"
     />
   </div>
 </template>
 
 <script>
-import RestaurantDetail from '../components/RestaurantDetail.vue';
-import RestaurantComments from '../components/RestaurantComments.vue';
+import RestaurantDetail from "../components/RestaurantDetail.vue";
+import RestaurantComments from "../components/RestaurantComments.vue";
 
 const dummyUser = {
   currentUser: {
     id: 1,
-    name: '管理者',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
+    name: "管理者",
+    email: "root@example.com",
+    image: "https://i.pravatar.cc/300",
+    isAdmin: true,
   },
-  isAuthenticated: true
-}
+  isAuthenticated: true,
+};
 
 const dummyData = {
   restaurant: {
@@ -73,7 +74,7 @@ const dummyData = {
 };
 
 export default {
-  name: 'Restaurant',
+  name: "Restaurant",
   data() {
     return {
       restaurant: {
@@ -89,7 +90,7 @@ export default {
         isLiked: false,
       },
       restaurantComments: [],
-      currentUser: dummyUser.currentUser
+      currentUser: dummyUser.currentUser,
     };
   },
   components: {
@@ -102,7 +103,7 @@ export default {
   },
   methods: {
     fetchRestaurant(restaurantId) {
-    console.log(restaurantId);
+      console.log(restaurantId);
       const { restaurant, isFavorited, isLiked } = dummyData;
       const {
         id,
@@ -128,6 +129,11 @@ export default {
         isLiked: isLiked,
       };
       this.restaurantComments = Comments;
+    },
+    afterDeleteComment(commentId) {
+      this.restaurantComments = this.restaurantComments.filter(
+        (comment) => comment.id !== commentId
+      );
     },
   },
 };
