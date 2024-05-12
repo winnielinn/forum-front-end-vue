@@ -80,10 +80,10 @@ export default {
     };
   },
   methods: {
-    addFollowing(userId) {
+    addFollowing() {
       this.isFollowed = true;
     },
-    deleteFollowing(userId) {
+    deleteFollowing() {
       this.isFollowed = false;
     },
   },
