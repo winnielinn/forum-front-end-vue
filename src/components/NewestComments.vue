@@ -13,7 +13,7 @@
         by
         <router-link
           :to="{
-            name: '/users',
+            name: 'user',
             params: { id: comment.User.id },
           }"
         >

@@ -27,7 +27,7 @@
             >Show</router-link
           >
 
-          <router-link href="#" class="btn btn-link">Edit</router-link>
+          <router-link :to="'#'" class="btn btn-link">Edit</router-link>
 
           <button
             @click.stop.prevent="deleteRestaurant(restaurant.id)"
