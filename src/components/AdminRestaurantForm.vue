@@ -134,18 +134,27 @@ const dummyData = {
 
 export default {
   name: "AdminRestaurantForm",
+  props: {
+    initialRestaurant: {
+      type: Object,
+      default: () => {
+        return {
+          name: "",
+          categoryId: "",
+          tel: "",
+          address: "",
+          opening_hours: "",
+          description: "",
+          image: "",
+        };
+      },
+    },
+  },
   data() {
     return {
       categories: [],
       restaurant: {
-        id: -1,
-        name: "",
-        categoryId: "",
-        tel: "",
-        address: "",
-        opening_hours: "",
-        description: "",
-        image: "",
+        ...this.initialRestaurant
       },
     };
   },
@@ -165,11 +174,11 @@ export default {
       const imageURL = window.URL.createObjectURL(files[0]);
       this.restaurant.image = imageURL;
     },
-    handleSubmit (e) {
+    handleSubmit(e) {
       const form = e.target;
       const formData = new FormData(form);
-      this.$emit('after-submit', formData);
-    }
+      this.$emit("after-submit", formData);
+    },
   },
 };
 </script>
