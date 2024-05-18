@@ -18,4 +18,11 @@ export default {
       },
     });
   },
+  getTops() {
+    return apiHelper.get("/restaurants/top", {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+  },
 };
