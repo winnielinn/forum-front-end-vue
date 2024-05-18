@@ -73,31 +73,56 @@ export default {
       }
 
     },
-    addFollow(id) {
-      this.users = this.users.map((user) => {
-        if (user.id === id) {
-          return {
-            ...user,
-            isFollowed: true,
-            FollowerCount: user.FollowerCount + 1,
-          };
-        } else {
-          return user;
+    async addFollow(userId) {
+      try {
+        const { data } = await usersAPI.addFollow({userId});
+        if (data.status !== 'success') {
+          throw new Error(data.message);
         }
-      });
+
+        this.users = this.users.map((user) => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              isFollowed: true,
+              FollowerCount: user.FollowerCount + 1,
+            };
+          } else {
+            return user;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法追蹤使用者，請稍後再試',
+        })
+        console.log('error', error);
+      }
     },
-    removeFollow(id) {
-      this.users = this.users.map((user) => {
-        if (user.id === id) {
-          return {
-            ...user,
-            isFollowed: false,
-            FollowerCount: user.FollowerCount - 1,
-          };
-        } else {
-          return user;
+    async removeFollow(userId) {
+      try {
+        const { data } = await usersAPI.removeFollow({userId});
+        if (data.status !== 'success') {
+          throw new Error(data.message);
         }
-      });
+        this.users = this.users.map((user) => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              isFollowed: false,
+              FollowerCount: user.FollowerCount - 1,
+            };
+          } else {
+            return user;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取消追蹤使用者，請稍後再試',
+        })
+        console.log('error', error);
+      }
     },
   },
 };
