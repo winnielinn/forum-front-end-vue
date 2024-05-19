@@ -19,5 +19,12 @@ export default {
         },
       });
     },
+    get() {
+      return apiHelper.get("/admin/restaurants", {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+    }
   },
 };
