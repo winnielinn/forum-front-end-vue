@@ -2,6 +2,7 @@
   <div class="container py-5">
     <AdminRestaurantForm
       :initial-restaurant="restaurant"
+      :is-processing="isProcessing"
       @after-submit="handleAfterSubmit"
     />
   </div>
@@ -29,11 +30,17 @@ export default {
         image: "",
         CategoryId: -1,
       },
+      isProcessing: false,
     };
   },
   created() {
     const { id } = this.$route.params;
     this.fetchRestaurant(id);
+  },
+  beforeRouteUpdate(to, form, next) {
+    const { id } = to.params;
+    this.fetchRestaurant(id);
+    next();
   },
   methods: {
     async fetchRestaurant(restaurantId) {
@@ -73,10 +80,26 @@ export default {
         console.log("error", error);
       }
     },
-    handleAfterSubmit(formData) {
-      // TODO: 透過 API 把 formData 的資料往後端送
-      for (let [name, value] of formData.entries()) {
-        console.log(name, " : ", value);
+    async handleAfterSubmit(formData) {
+      try {
+        this.isProcessing = true;
+        const { data } = await adminAPI.restaurants.update({
+          restaurantId: this.restaurant.id,
+          formData,
+        });
+
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.$router.push({ name: "admin-restaurants" });
+      } catch (error) {
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "error",
+          title: "無法更新餐廳資料，請稍後再試",
+        });
+        console.log("error", error);
       }
     },
   },
