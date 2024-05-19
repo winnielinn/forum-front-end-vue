@@ -85,8 +85,8 @@ export default {
 
         const { data } = respose;
 
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status === 'error') {
+          throw new Error(data.message)
         }
 
         localStorage.setItem("token", data.token);

@@ -76,8 +76,8 @@ export default {
     async addFollow(userId) {
       try {
         const { data } = await usersAPI.addFollow({userId});
-        if (data.status !== 'success') {
-          throw new Error(data.message);
+        if (data.status === 'error') {
+          throw new Error(data.message)
         }
 
         this.users = this.users.map((user) => {
@@ -102,8 +102,8 @@ export default {
     async removeFollow(userId) {
       try {
         const { data } = await usersAPI.removeFollow({userId});
-        if (data.status !== 'success') {
-          throw new Error(data.message);
+        if (data.status === 'error') {
+          throw new Error(data.message)
         }
         this.users = this.users.map((user) => {
           if (user.id === userId) {
