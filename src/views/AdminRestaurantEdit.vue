@@ -9,20 +9,8 @@
 
 <script>
 import AdminRestaurantForm from "../components/AdminRestaurantForm.vue";
-
-const dummyData = {
-  restaurant: {
-    id: 1,
-    name: "Laurence Reynolds",
-    tel: "1-657-067-3756 x9782",
-    address: "187 Kirlin Squares",
-    opening_hours: "08:00",
-    description: "sit est mollitia",
-    image:
-      "https://loremflickr.com/320/240/restaurant,food/?random=91.29816290184887",
-    CategoryId: 3,
-  },
-};
+import adminAPI from "./../apis/admin";
+import { Toast } from "./../utils/helper";
 
 export default {
   name: "AdminRestaurantEdit",
@@ -48,31 +36,42 @@ export default {
     this.fetchRestaurant(id);
   },
   methods: {
-    fetchRestaurant(restaurantId) {
-      const { restaurant } = dummyData;
-      const {
-        id,
-        name,
-        tel,
-        address,
-        opening_hours,
-        description,
-        image,
-        CategoryId,
-      } = restaurant;
-      console.log(restaurantId);
+    async fetchRestaurant(restaurantId) {
+      try {
+        const { data } = await adminAPI.restaurants.getDetail({ restaurantId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
 
-      this.restaurant = {
-        ...restaurant,
-        id,
-        name,
-        tel,
-        address,
-        opening_hours,
-        description,
-        image,
-        categoryId: CategoryId,
-      };
+        const {
+          id,
+          name,
+          tel,
+          address,
+          opening_hours: openingHours,
+          description,
+          image,
+          CategoryId: categoryId,
+        } = data.restaurant;
+
+        this.restaurant = {
+          ...this.restaurant,
+          id,
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image,
+          categoryId,
+        };
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得餐廳資料，請稍後再試",
+        });
+        console.log("error", error);
+      }
     },
     handleAfterSubmit(formData) {
       // TODO: 透過 API 把 formData 的資料往後端送
