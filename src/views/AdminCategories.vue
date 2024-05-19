@@ -19,7 +19,7 @@
             @click.stop.prevent="createCategory"
             :disabled="isProcessing"
           >
-            {{ isProcessing ? '處理中' : '新增' }}
+            {{ isProcessing ? "處理中" : "新增" }}
           </button>
         </div>
       </div>
@@ -156,12 +156,20 @@ export default {
         console.log("error", error);
       }
     },
-    deleteCategory(categoryId) {
-      // TODO: 透過 API 告知伺服器欲刪除的餐廳類別...
-
-      this.categories = this.categories.filter(
-        (category) => category.id !== categoryId
-      );
+    async deleteCategory(categoryId) {
+      try {
+        const { data } = await adminAPI.categories.delete({ categoryId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+        this.fetchCategories();
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "刪除餐廳類別失敗，請稍後再試",
+        });
+        console.log("error", error);
+      }
     },
     updateCategory(categoryId, name) {
       // TODO: 透過 API 向伺服器更新類別名稱
