@@ -68,8 +68,8 @@ export default {
     async fetchRestaurants() {
       try {
         const { data } = await adminAPI.restaurants.get();
-        if (data.status === 'error') {
-          throw new Error(data.message)
+        if (data.status === "error") {
+          throw new Error(data.message);
         }
 
         this.restaurants = data.restaurants;
@@ -81,10 +81,24 @@ export default {
         console.log("error", error);
       }
     },
-    deleteRestaurant(restaurantId) {
-      this.restaurants = this.restaurants.filter(
-        (restaurant) => restaurant.id !== restaurantId
-      );
+    async deleteRestaurant(restaurantId) {
+      try {
+        const { data } = await adminAPI.restaurants.delete({ restaurantId });
+
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.restaurants = this.restaurants.filter(
+          (restaurant) => restaurant.id !== restaurantId
+        );
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法刪除餐廳，請稍後再試",
+        });
+        console.log("error", error);
+      }
     },
   },
 };
