@@ -171,11 +171,23 @@ export default {
         console.log("error", error);
       }
     },
-    updateCategory(categoryId, name) {
-      // TODO: 透過 API 向伺服器更新類別名稱
-
-      console.log(name);
-      this.toggleIsEditing(categoryId);
+    async updateCategory(categoryId, name) {
+      try {
+        const { data } = await adminAPI.categories.update({
+          categoryId,
+          name,
+        });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+        this.toggleIsEditing(categoryId);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "更新餐廳類別失敗，請稍後再試",
+        });
+        console.log("error", error);
+      }
     },
     toggleIsEditing(categoryId) {
       this.categories = this.categories.map((category) => {
