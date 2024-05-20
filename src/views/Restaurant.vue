@@ -1,7 +1,7 @@
 <template>
   <div class="container py-5">
     <h1>餐廳描述頁</h1>
-    <RestaurantDetail v-bind:restaurant="restaurant" />
+    <RestaurantDetail :initial-restaurant="restaurant" />
     <hr />
     <RestaurantComments
       v-bind:restaurantComments="restaurantComments"
@@ -62,7 +62,7 @@ export default {
   methods: {
     async fetchRestaurant(restaurantId) {
       try {
-        const { data, isFavorited, isLiked } = await restaurantAPI.getRestaurant({ restaurantId });
+        const { data } = await restaurantAPI.getRestaurant({ restaurantId });
 
         const {
           id,
@@ -85,8 +85,8 @@ export default {
           tel: tel,
           address: address,
           description: description,
-          isFavorited: isFavorited,
-          isLiked: isLiked,
+          isFavorited: data.isFavorited,
+          isLiked: data.isLiked,
         };
 
         this.restaurantComments = Comments;
