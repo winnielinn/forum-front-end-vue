@@ -21,87 +21,8 @@
 </template>
 
 <script>
-const dummyData = {
-  restaurant: {
-    id: 1,
-    name: "Kaylah Kerluke",
-    tel: "1-471-742-4286",
-    address: "7260 Langosh Parkway",
-    opening_hours: "08:00",
-    description: "Aliquam voluptate ut.",
-    image:
-      "https://loremflickr.com/320/240/restaurant,food/?random=94.52009952712272",
-    viewCounts: 0,
-    createdAt: "2024-05-07T05:57:29.000Z",
-    updatedAt: "2024-05-07T05:57:29.000Z",
-    CategoryId: 4,
-    Category: {
-      id: 4,
-      name: "墨西哥料理",
-      createdAt: "2024-05-07T05:57:29.000Z",
-      updatedAt: "2024-05-07T05:57:29.000Z",
-    },
-    Comments: [
-      {
-        id: 1,
-        text: "Voluptatem hic accusantium.",
-        UserId: 2,
-        RestaurantId: 1,
-        createdAt: "2024-05-07T05:57:29.000Z",
-        updatedAt: "2024-05-07T05:57:29.000Z",
-        User: {
-          id: 2,
-          name: "user1",
-          email: "user1@example.com",
-          password:
-            "$2a$10$7g4m3oFuvse/1l.xXKcgLunQGcjoy/KU1x7lFg0v/ppjlvM6JVDJ6",
-          isAdmin: false,
-          image: null,
-          createdAt: "2024-05-07T05:57:28.000Z",
-          updatedAt: "2024-05-07T05:57:28.000Z",
-        },
-      },
-      {
-        id: 51,
-        text: "Unde officia dolorem explicabo.",
-        UserId: 2,
-        RestaurantId: 1,
-        createdAt: "2024-05-07T05:57:29.000Z",
-        updatedAt: "2024-05-07T05:57:29.000Z",
-        User: {
-          id: 2,
-          name: "user1",
-          email: "user1@example.com",
-          password:
-            "$2a$10$7g4m3oFuvse/1l.xXKcgLunQGcjoy/KU1x7lFg0v/ppjlvM6JVDJ6",
-          isAdmin: false,
-          image: null,
-          createdAt: "2024-05-07T05:57:28.000Z",
-          updatedAt: "2024-05-07T05:57:28.000Z",
-        },
-      },
-      {
-        id: 101,
-        text: "Omnis modi architecto.",
-        UserId: 2,
-        RestaurantId: 1,
-        createdAt: "2024-05-07T05:57:29.000Z",
-        updatedAt: "2024-05-07T05:57:29.000Z",
-        User: {
-          id: 2,
-          name: "user1",
-          email: "user1@example.com",
-          password:
-            "$2a$10$7g4m3oFuvse/1l.xXKcgLunQGcjoy/KU1x7lFg0v/ppjlvM6JVDJ6",
-          isAdmin: false,
-          image: null,
-          createdAt: "2024-05-07T05:57:28.000Z",
-          updatedAt: "2024-05-07T05:57:28.000Z",
-        },
-      },
-    ],
-  },
-};
+import restaurantsAPI from "../apis/restaurants";
+import { Toast } from "../utils/helper";
 
 export default {
   data() {
@@ -116,20 +37,29 @@ export default {
     };
   },
   created() {
-    this.fetchRestaurant();
+    const { id } = this.$route.params;
+    this.fetchRestaurant(id);
   },
   methods: {
-    fetchRestaurant() {
-      const { restaurant } = dummyData;
-      const { id, name, Category, Comments, viewCounts } = restaurant;
-      this.restaurant = {
-        ...this.restaurant,
-        id,
-        name,
-        categoryName: Category ? Category.name : "未分類",
-        commentsLength: Comments.length,
-        viewCounts,
-      };
+    async fetchRestaurant(restaurantId) {
+      try {
+        const { data } = await restaurantsAPI.getRestaurant({ restaurantId });
+        const { id, name, Category, Comments, viewCounts } = data.restaurant;
+        this.restaurant = {
+          ...this.restaurant,
+          id,
+          name,
+          categoryName: Category ? Category.name : "未分類",
+          commentsLength: Comments.length,
+          viewCounts,
+        };
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得餐廳資訊，請稍後再試",
+        });
+        console.log("error", error);
+      }
     },
   },
 };
