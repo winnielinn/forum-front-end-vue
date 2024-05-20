@@ -14,7 +14,9 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from "uuid";
+import { mapState } from 'vuex';
+import userAPI from "../apis/users";
+import { Toast } from "../utils/helper";
 
 export default {
   data() {
@@ -22,16 +24,39 @@ export default {
       text: "",
     };
   },
+  computed: {
+    ...mapState(['currentUser']),
+  },
   methods: {
-    handleSubmit() {
-      // TODO: 向 API 發送 POST 請求
-      // 伺服器新增 Comment 成功後...
-      this.$emit("after-create-comment", {
-        commentId: uuidv4(),
-        restaurantId: this.restaurantId,
-        text: this.text,
-      });
-      this.text = "";
+    async handleSubmit() {
+      try {
+        const { data } = await userAPI.createComment({
+          currentUser: this.currentUser,
+          restaurantId: this.restaurantId,
+          text: this.text,
+        });
+
+        const { status, commentId } = data;
+
+        if (status === "error") {
+          throw new Error(data.message);
+        }
+        
+
+        this.$emit("after-create-comment", {
+          commentId,
+          restaurantId: this.restaurantId,
+          text: this.text,
+        });
+
+        this.text = "";
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法新增評論，請稍後再試",
+        });
+        console.error("error", error);
+      }
     },
   },
   props: {

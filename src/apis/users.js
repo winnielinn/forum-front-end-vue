@@ -50,4 +50,9 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` },
     });
   },
+  createComment({ currentUser, text, restaurantId }) {
+    return apiHelper.post(`/comments`, { currentUser, text, restaurantId }, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    }); 
+  }
 };
