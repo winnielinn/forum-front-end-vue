@@ -85,11 +85,14 @@ export default {
 
         const { data } = respose;
 
-        if (data.status === 'error') {
-          throw new Error(data.message)
+        if (data.status === "error") {
+          throw new Error(data.message);
         }
 
         localStorage.setItem("token", data.token);
+
+        this.$store.commit("setCurrentUser", data.user);
+
         this.$router.push("/restaurants");
       } catch (error) {
         this.password = "";
