@@ -29,6 +29,8 @@
 
 <script>
 import { fromNowFilter } from "./../utils/mixins";
+import userAPI from "../apis/users";
+import { Toast } from "../utils/helper";
 
 export default {
   props: {
@@ -42,8 +44,22 @@ export default {
     },
   },
   methods: {
-    handleDeleteButtonClick(commentId) {
-      this.$emit("after-delete-comment", commentId);
+    async handleDeleteButtonClick(commentId) {
+      try {
+        const { data } = await userAPI.deleteComment({commentId});
+
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.$emit("after-delete-comment", commentId);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法刪除評論，請稍後再試",
+        });
+        console.log("error", error);
+      }
     },
   },
   mixins: [fromNowFilter],
