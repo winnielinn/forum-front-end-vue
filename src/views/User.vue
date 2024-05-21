@@ -54,6 +54,7 @@ export default {
         commentsLength: 0,
         favoritedRestaurantsLength: 0,
       },
+      isFollowed: false,
       followings: [],
       followers: [],
       comments: [],

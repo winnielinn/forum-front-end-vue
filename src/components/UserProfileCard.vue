@@ -59,6 +59,9 @@
 </template>
 
 <script>
+import usersAPI from "../apis/users";
+import { Toast } from "../utils/helper";
+
 export default {
   props: {
     user: {
@@ -80,11 +83,44 @@ export default {
     };
   },
   methods: {
-    addFollowing() {
-      this.isFollowed = true;
+    async addFollowing(userId) {
+      try {
+        const { data } = await usersAPI.addFollow({ userId });
+
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.isFollowed = true;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法加入追蹤清單，請稍後再試",
+        });
+        console.log("error", error);
+      }
     },
-    deleteFollowing() {
-      this.isFollowed = false;
+    async deleteFollowing(userId) {
+      try {
+        const { data } = await usersAPI.removeFollow({ userId });
+
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.isFollowed = false;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法移除追蹤清單，請稍後再試",
+        });
+        console.log("error", error);
+      }
+    },
+  },
+  watch: {
+    initialIsFollowed(newValue) {
+      this.isFollowed = newValue;
     },
   },
 };
