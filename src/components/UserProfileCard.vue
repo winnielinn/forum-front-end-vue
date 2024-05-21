@@ -2,7 +2,7 @@
   <div class="card mb-3">
     <div class="row no-gutters">
       <div class="col-md-4">
-        <img :src="user.image" width="300px" height="300px" />
+        <img :src="user.image | emptyImage" width="300px" height="300px" />
       </div>
       <div class="col-md-8">
         <div class="card-body">
@@ -61,6 +61,7 @@
 <script>
 import usersAPI from "../apis/users";
 import { Toast } from "../utils/helper";
+import { emptyImageFilter } from "./../utils/mixins";
 
 export default {
   props: {
@@ -82,6 +83,7 @@ export default {
       isFollowed: this.initialIsFollowed,
     };
   },
+  mixins: [emptyImageFilter],
   methods: {
     async addFollowing(userId) {
       try {
