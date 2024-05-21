@@ -33,7 +33,9 @@
         />
       </div>
 
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary" :disabled="isProcessing">
+        {{ isProcessing ? "Sending" : "Submit" }}
+      </button>
     </form>
   </div>
 </template>
@@ -54,6 +56,7 @@ export default {
         name: "",
         email: "",
       },
+      isProcessing: false,
     };
   },
   created() {
@@ -87,7 +90,7 @@ export default {
         };
 
         if (userId.toString() !== id.toString()) {
-          this.$router.push( { name: '404'})
+          this.$router.push({ name: "404" });
         }
       } catch (error) {
         Toast.fire({
@@ -106,13 +109,38 @@ export default {
       const imageURL = window.URL.createObjectURL(files[0]);
       this.user.image = imageURL;
     },
-    handleSubmit(e) {
-      const form = e.target;
-      const formData = new FormData(form);
+    async handleSubmit(e) {
+      try {
+        this.isProcessing = true;
 
-      // TODO: 透過 API 向伺服器更新使用者
-      for (let [name, value] of formData.entries()) {
-        console.log(name + ": " + value);
+        if (!this.user.name) {
+          Toast.fire({
+            icon: 'warning',
+            title: '請輸入姓名'
+          })
+          return
+        }
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const { data } = await usersAPI.update({
+          userId: this.user.id,
+          formData,
+        });
+
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.$router.push({ name: "user" });
+      } catch (error) {
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "error",
+          title: "無法更新使用者資料，請稍後再試",
+        });
+        console.log("error", error);
       }
     },
   },

@@ -15,6 +15,13 @@ export default {
       },
     });
   },
+  update({ userId, formData }) {
+    return apiHelper.put(`/users/${userId}`, formData, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+  },
   addFavorite({ restaurantId }) {
     return apiHelper.post(`/favorite/${restaurantId}`, null, {
       headers: { Authorization: `Bearer ${getToken()}` },
@@ -51,9 +58,13 @@ export default {
     });
   },
   createComment({ currentUser, text, restaurantId }) {
-    return apiHelper.post(`/comments`, { currentUser, text, restaurantId }, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    }); 
+    return apiHelper.post(
+      `/comments`,
+      { currentUser, text, restaurantId },
+      {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      }
+    );
   },
   deleteComment({ commentId }) {
     return apiHelper.delete(`/comments/${commentId}`, {
