@@ -78,6 +78,17 @@ export default {
           Authorization: `Bearer ${getToken()}`,
         },
       });
-    }
-  }
+    },
+    updateRole({ userId, isAdmin }) {
+      return apiHelper.put(
+        `/admin/users/${userId}`,
+        { isAdmin },
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+    },
+  },
 };

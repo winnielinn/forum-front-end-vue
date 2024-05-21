@@ -59,8 +59,8 @@ export default {
     async fetchUsers() {
       try {
         const { data } = await adminAPI.users.get();
-        
-        if (data.status === 'error') {
+
+        if (data.status === "error") {
           throw new Error(data.message);
         }
 
@@ -75,16 +75,34 @@ export default {
         console.log("error", error);
       }
     },
-    toggleUserRole({ userId, isAdmin }) {
-      this.users = this.users.map((user) => {
-        if (user.id === userId) {
-          return {
-            ...user,
-            isAdmin: !isAdmin,
-          };
+    async toggleUserRole({ userId, isAdmin }) {
+      try {
+        console.log(userId, isAdmin);
+        const { data } = await adminAPI.users.updateRole({
+          userId,
+          isAdmin: (!isAdmin).toString(),
+        });
+
+        if (data.status === "error") {
+          throw new Error(data.message);
         }
-        return user;
-      });
+
+        this.users = this.users.map((user) => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              isAdmin: !isAdmin,
+            };
+          }
+          return user;
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法更新使用者角色，請稍後再試",
+        });
+        console.log("error", error);
+      }
     },
   },
 };
