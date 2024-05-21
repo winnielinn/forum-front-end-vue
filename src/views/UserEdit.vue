@@ -5,7 +5,7 @@
         <label for="name">Name</label>
         <input
           id="name"
-          v-model="name"
+          v-model="user.name"
           type="text"
           name="name"
           class="form-control"
@@ -17,8 +17,8 @@
       <div class="form-group">
         <label for="image">Image</label>
         <img
-          v-if="image"
-          :src="image"
+          v-if="user.image"
+          :src="user.image | emptyImage"
           class="d-block img-thumbnail m-3"
           width="200"
           height="200"
@@ -39,48 +39,72 @@
 </template>
 
 <script>
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "管理者",
-    email: "root@example.com",
-    image: "https://i.pravatar.cc/300",
-    isAdmin: true,
-  },
-  isAuthenticated: true,
-};
+import { mapState } from "vuex";
+import usersAPI from "../apis/users";
+import { Toast } from "../utils/helper";
+import { emptyImageFilter } from "./../utils/mixins";
 
 export default {
   name: "UserEdit",
   data() {
     return {
-      id: 0,
-      image: "",
-      name: "",
-      email: "",
+      user: {
+        id: 0,
+        image: "",
+        name: "",
+        email: "",
+      },
     };
   },
   created() {
-    this.fetchUser();
+    const { id } = this.$route.params;
+    this.setUser(id);
+  },
+  mixins: [emptyImageFilter],
+  computed: {
+    ...mapState(["currentUser"]),
+  },
+  beforeRouteUpdate(to, from, next) {
+    const { id } = to.params;
+    this.setUser(id);
+    next();
   },
   methods: {
-    fetchUser() {
-      const { currentUser } = dummyUser;
-      const { id, name, email, image } = currentUser;
+    async setUser(userId) {
+      try {
+        const { data } = await usersAPI.getCurrentUser();
 
-      this.id = id;
-      this.name = name;
-      this.email = email;
-      this.image = image;
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        const { id, name, image } = data;
+        this.user = {
+          ...this.user,
+          id,
+          name,
+          image,
+        };
+
+        if (userId.toString() !== id.toString()) {
+          this.$router.push( { name: '404'})
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得使用者資料，請稍後再試",
+        });
+        console.log("error", error);
+      }
     },
     handleFileChange(e) {
       const { files } = e.target;
       if (files.length === 0) {
-        this.image = "";
+        this.user.image = "";
         return;
       }
       const imageURL = window.URL.createObjectURL(files[0]);
-      this.image = imageURL;
+      this.user.image = imageURL;
     },
     handleSubmit(e) {
       const form = e.target;
@@ -90,6 +114,14 @@ export default {
       for (let [name, value] of formData.entries()) {
         console.log(name + ": " + value);
       }
+    },
+  },
+  watch: {
+    currentUser(user) {
+      if (user.id !== this.currentUser.id) return;
+
+      const { id } = this.$route.params;
+      this.setUser(id);
     },
   },
 };
