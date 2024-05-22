@@ -112,10 +112,11 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   const token = localStorage.getItem('token');
+  const tokenInStore = store.state.token;
 
-  let isAuthenticated = false;
+  let isAuthenticated = store.state.isAuthenticated;
 
-  if (token) {
+  if (tokenInStore !== token) {
     isAuthenticated = await store.dispatch('fetchCurrentUser');
   }
 
