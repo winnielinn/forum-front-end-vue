@@ -36,6 +36,7 @@
           <button
             type="button"
             class="btn btn-sm btn-outline-success my-2 my-sm-0"
+            @click="logout"
           >
             登出
           </button>
@@ -46,11 +47,17 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
 export default {
   computed: {
-    ...mapState(['currentUser', 'isAuthenticated'])
-  }
+    ...mapState(["currentUser", "isAuthenticated"]),
+  },
+  methods: {
+    logout() {
+      this.$store.commit("revokdeAuthentication");
+      this.$router.push("/signin");
+    },
+  },
 };
 </script>
