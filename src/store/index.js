@@ -26,10 +26,10 @@ export default new Vuex.Store({
       state.isAuthenticated = true;
     },
     revokdeAuthentication(state) {
-      state.currentUser = {}
-      state.isAuthenticated = false
-      localStorage.removeItem('token')
-    }
+      state.currentUser = {};
+      state.isAuthenticated = false;
+      localStorage.removeItem("token");
+    },
   },
   // dispatch 發動
   actions: {
@@ -50,8 +50,12 @@ export default new Vuex.Store({
           image,
           isAdmin,
         });
+
+        return true;
       } catch (error) {
         console.error(error.message);
+
+        return false;
       }
     },
   },
