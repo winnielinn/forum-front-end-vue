@@ -31,6 +31,7 @@
 import { fromNowFilter } from "./../utils/mixins";
 import userAPI from "../apis/users";
 import { Toast } from "../utils/helper";
+import { mapState } from 'vuex';
 
 export default {
   props: {
@@ -38,10 +39,9 @@ export default {
       type: Array,
       required: true,
     },
-    currentUser: {
-      type: Object,
-      required: true,
-    },
+  },
+  computed: {
+    ...mapState(['currentUser']),
   },
   methods: {
     async handleDeleteButtonClick(commentId) {
