@@ -1,13 +1,13 @@
 <template>
   <div class="container py-5">
     <NavTabs />
-    <RestaurantNavPillsVue v-bind:categories="categories" />
+    <RestaurantNavPills :categories="categories" />
 
     <div class="row">
       <RestaurantCard
         v-for="restaurant in restaurants"
-        v-bind:key="restaurant.id"
-        v-bind:initial-restaurant="restaurant"
+        :key="restaurant.id"
+        :initial-restaurant="restaurant"
       />
     </div>
 
@@ -25,7 +25,7 @@
 <script>
 import NavTabs from "../components/NavTabs.vue";
 import RestaurantCard from "../components/RestaurantCard.vue";
-import RestaurantNavPillsVue from "../components/RestaurantNavPills.vue";
+import RestaurantNavPills from "../components/RestaurantNavPills.vue";
 import RestaurantsPagination from "../components/RestaurantsPagination.vue";
 import restaurantsAPI from "../apis/restaurants";
 import { Toast } from "./../utils/helper";
@@ -34,7 +34,7 @@ export default {
   components: {
     NavTabs,
     RestaurantCard,
-    RestaurantNavPillsVue,
+    RestaurantNavPills,
     RestaurantsPagination,
   },
   data() {
@@ -49,15 +49,12 @@ export default {
     };
   },
   created() {
-    this.fetchRestaurants({
-      queryPage: 1,
-      queryCategoryId: "",
-    });
+    const { page = "", categoryId = "" } = this.$route.query;
+    this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId });
   },
   beforeRouteUpdate(to, from, next) {
-    console.log(this.$route);
-    const { page = '', categoryId = ''} = this.$route.query
-    this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId })
+    const { page = "", categoryId = "" } = to.query;
+    this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId });
     next();
   },
   methods: {
@@ -67,6 +64,7 @@ export default {
           page: queryPage,
           categoryId: queryCategoryId,
         });
+
         const {
           restaurants,
           categories,
@@ -85,11 +83,11 @@ export default {
         this.previousPage = prev;
         this.nextPage = next;
       } catch (error) {
+        console.log("error", error);
         Toast.fire({
           icon: "error",
           title: "無法取得餐廳資料，請稍後再試",
         });
-        console.log("error", error);
       }
     },
   },
