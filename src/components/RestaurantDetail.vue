@@ -42,6 +42,7 @@
         @click.stop.prevent="removeFavorite(restaurant.id)"
         type="button"
         class="btn btn-danger btn-border mr-2"
+        :disabled="isProcessing"
       >
         移除最愛
       </button>
@@ -50,6 +51,7 @@
         @click.stop.prevent="addFavorite(restaurant.id)"
         type="button"
         class="btn btn-primary btn-border mr-2"
+        :disabled="isProcessing"
       >
         加到最愛
       </button>
@@ -58,6 +60,7 @@
         @click.stop.prevent="removeLike(restaurant.id)"
         type="button"
         class="btn btn-danger like mr-2"
+        :disabled="isProcessing"
       >
         Unlike
       </button>
@@ -66,6 +69,7 @@
         @click.stop.prevent="addLike(restaurant.id)"
         type="button"
         class="btn btn-primary like mr-2"
+        :disabled="isProcessing"
       >
         Like
       </button>
@@ -90,11 +94,13 @@ export default {
   data() {
     return {
       restaurant: this.initialRestaurant,
+      isProcessing: false,
     };
   },
   methods: {
     async addFavorite(restaurantId) {
       try {
+        this.isProcessing = true;
         const { data } = await usersAPI.addFavorite({ restaurantId });
 
         if (data.status === "error") {
@@ -105,7 +111,9 @@ export default {
           ...this.restaurant,
           isFavorited: true,
         };
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.error(error);
         Toast.fire({
           icon: "error",
@@ -115,6 +123,7 @@ export default {
     },
     async removeFavorite(restaurantId) {
       try {
+        this.isProcessing = true;
         const { data } = await usersAPI.removeFavorite({ restaurantId });
 
         if (data.status === "error") {
@@ -125,7 +134,9 @@ export default {
           ...this.restaurant,
           isFavorited: false,
         };
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.error(error);
         Toast.fire({
           icon: "error",
@@ -135,6 +146,7 @@ export default {
     },
     async addLike(restaurantId) {
       try {
+        this.isProcessing = true;
         const { data } = await usersAPI.addLike({ restaurantId });
 
         if (data.status === "error") {
@@ -145,7 +157,9 @@ export default {
           ...this.restaurant,
           isLiked: true,
         };
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.error(error);
         Toast.fire({
           icon: "error",
@@ -155,6 +169,7 @@ export default {
     },
     async removeLike(restaurantId) {
       try {
+        this.isProcessing = true;
         const { data } = await usersAPI.removeLike({ restaurantId });
 
         if (data.status === "error") {
@@ -165,7 +180,9 @@ export default {
           ...this.restaurant,
           isLiked: false,
         };
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.error(error);
         Toast.fire({
           icon: "error",

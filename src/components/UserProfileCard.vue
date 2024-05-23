@@ -40,6 +40,7 @@
               type="button"
               class="btn btn-danger"
               @click.stop.prevent="deleteFollowing(user.id)"
+              :disabled="isProcessing"
             >
               取消追蹤
             </button>
@@ -48,6 +49,7 @@
               type="button"
               class="btn btn-primary"
               @click.stop.prevent="addFollowing(user.id)"
+              :disabled="isProcessing"
             >
               追蹤
             </button>
@@ -81,12 +83,14 @@ export default {
   data() {
     return {
       isFollowed: this.initialIsFollowed,
+      isProcessing: false,
     };
   },
   mixins: [emptyImageFilter],
   methods: {
     async addFollowing(userId) {
       try {
+        this.isProcessing = true;
         const { data } = await usersAPI.addFollow({ userId });
 
         if (data.status === "error") {
@@ -94,7 +98,9 @@ export default {
         }
 
         this.isFollowed = true;
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         Toast.fire({
           icon: "error",
           title: "無法加入追蹤清單，請稍後再試",
@@ -104,6 +110,7 @@ export default {
     },
     async deleteFollowing(userId) {
       try {
+        this.isProcessing = true;
         const { data } = await usersAPI.removeFollow({ userId });
 
         if (data.status === "error") {
@@ -111,7 +118,9 @@ export default {
         }
 
         this.isFollowed = false;
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         Toast.fire({
           icon: "error",
           title: "無法移除追蹤清單，請稍後再試",

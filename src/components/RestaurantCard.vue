@@ -29,6 +29,7 @@
           v-if="restaurant.isFavorited"
           v-on:click.stop.prevent="removeFavorite(restaurant.id)"
           class="btn btn-danger btn-border favorite mr-2"
+          :disabled="isProcessing"
         >
           移除最愛
         </button>
@@ -37,6 +38,7 @@
           v-on:click.stop.prevent="addFavorite(restaurant.id)"
           type="button"
           class="btn btn-primary btn-border favorite mr-2"
+          :disabled="isProcessing"
         >
           加到最愛
         </button>
@@ -45,6 +47,7 @@
           v-on:click.stop.prevent="removeLike(restaurant.id)"
           type="button"
           class="btn btn-danger like mr-2"
+          :disabled="isProcessing"
         >
           Unlike
         </button>
@@ -53,6 +56,7 @@
           type="button"
           v-on:click.stop.prevent="addLike(restaurant.id)"
           class="btn btn-primary like mr-2"
+          :disabled="isProcessing"
         >
           Like
         </button>
@@ -76,6 +80,7 @@ export default {
     return {
       restaurant: this.initialRestaurant,
       isLoading: true,
+      isProcessing: false,
     };
   },
   methods: {
@@ -84,6 +89,7 @@ export default {
     },
     async addFavorite(restaurantId) {
       try {
+        this.isProcessing = true;
         const { data } = await usersAPI.addFavorite({ restaurantId });
 
         if (data.status === 'error') {
@@ -94,7 +100,9 @@ export default {
           ...this.restaurant,
           isFavorited: true,
         };
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         Toast.fire({
           icon: "error",
           title: "無法將餐廳加入最愛，請稍後再試",
@@ -104,6 +112,7 @@ export default {
     },
     async removeFavorite(restaurantId) {
       try {
+        this.isProcessing = true;
         const { data } = await usersAPI.removeFavorite({ restaurantId });
         if (data.status === 'error') {
           throw new Error(data.message)
@@ -112,7 +121,9 @@ export default {
           ...this.restaurant,
           isFavorited: false,
         };
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         Toast.fire({
           icon: "error",
           title: "無法將餐廳移除最愛，請稍後再試",
@@ -122,6 +133,7 @@ export default {
     },
     async addLike(restaurantId) {
       try {
+        this.isProcessing = true;
         const { data } = await usersAPI.addLike({ restaurantId });
         if (data.status === 'error') {
           throw new Error(data.message)
@@ -130,7 +142,9 @@ export default {
           ...this.restaurant,
           isLiked: true,
         };
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         Toast.fire({
           icon: "error",
           title: "無法將餐廳加入喜愛的清單，請稍後再試",
@@ -140,6 +154,7 @@ export default {
     },
     async removeLike(restaurantId) {
       try {
+        this.isProcessing = true;
         const { data } = await usersAPI.removeLike({ restaurantId });
         if (data.status === 'error') {
           throw new Error(data.message)
@@ -148,7 +163,9 @@ export default {
           ...this.restaurant,
           isLiked: false,
         };
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         Toast.fire({
           icon: "error",
           title: "無法將餐廳移除喜愛的清單，請稍後再試",
