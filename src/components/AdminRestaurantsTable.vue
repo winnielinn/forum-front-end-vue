@@ -61,6 +61,7 @@ export default {
   data() {
     return {
       restaurants: [],
+      isLoading: true,
     };
   },
   created() {
@@ -72,13 +73,16 @@ export default {
   methods: {
     async fetchRestaurants() {
       try {
+        this.isLoading = true;
         const { data } = await adminAPI.restaurants.get();
         if (data.status === "error") {
           throw new Error(data.message);
         }
 
         this.restaurants = data.restaurants;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: "無法取得餐廳資料，請稍後再試",
