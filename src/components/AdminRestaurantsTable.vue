@@ -1,5 +1,6 @@
 <template>
-  <table class="table">
+  <Spinner v-if="isLoading" />
+  <table class="table" v-else>
     <thead class="thead-dark">
       <tr>
         <th scope="col">#</th>
@@ -54,6 +55,7 @@
 <script>
 import adminAPI from "../apis/admin";
 import { Toast } from "../utils/helper";
+import Spinner from "./Spinner.vue";
 
 export default {
   data() {
@@ -63,6 +65,9 @@ export default {
   },
   created() {
     this.fetchRestaurants();
+  },
+  components: {
+    Spinner,
   },
   methods: {
     async fetchRestaurants() {

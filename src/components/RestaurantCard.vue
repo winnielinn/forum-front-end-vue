@@ -1,12 +1,13 @@
 <template>
   <div class="col-md-6 col-lg-4">
-    <div class="card mb-4">
+    <div class="card mb-4" v-show="!isLoading">
       <img
         class="card-img-top"
         :src="restaurant.image"
         alt="Card image cap"
         width="286px"
         height="180px"
+        @load="changeLoading"
       />
       <div class="card-body">
         <p class="card-text title-wrap">
@@ -74,9 +75,13 @@ export default {
   data() {
     return {
       restaurant: this.initialRestaurant,
+      isLoading: true,
     };
   },
   methods: {
+    changeLoading () {
+      this.isLoading = false
+    },
     async addFavorite(restaurantId) {
       try {
         const { data } = await usersAPI.addFavorite({ restaurantId });

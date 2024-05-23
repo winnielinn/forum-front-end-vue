@@ -1,52 +1,59 @@
 <template>
   <div class="container py-5">
     <NavTabs />
-    <h1 class="mt-5">美食達人</h1>
-    <hr />
-    <div class="row text-center">
-      <div class="col-3" v-for="user in users" v-bind:key="user.id">
-        <router-link v-bind:to="'#'">
-          <img v-bind:src="user.image ?? null" width="140px" height="140px" />
-        </router-link>
-        <h2>{{ user.name ?? "無名氏" }}</h2>
-        <span class="badge badge-secondary"
-          >追蹤人數：{{ user.FollowerCount }}</span
-        >
-        <p class="mt-3">
-          <button
-            type="button"
-            class="btn btn-danger"
-            v-if="user.isFollowed"
-            v-on:click.stop.prevent="removeFollow(user.id)"
+
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <h1 class="mt-5">美食達人</h1>
+      <hr />
+      <div class="row text-center">
+        <div class="col-3" v-for="user in users" v-bind:key="user.id">
+          <router-link v-bind:to="'#'">
+            <img v-bind:src="user.image ?? null" width="140px" height="140px" />
+          </router-link>
+          <h2>{{ user.name ?? "無名氏" }}</h2>
+          <span class="badge badge-secondary"
+            >追蹤人數：{{ user.FollowerCount }}</span
           >
-            取消追蹤
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            v-else
-            v-on:click.stop.prevent="addFollow(user.id)"
-          >
-            追蹤
-          </button>
-        </p>
+          <p class="mt-3">
+            <button
+              type="button"
+              class="btn btn-danger"
+              v-if="user.isFollowed"
+              v-on:click.stop.prevent="removeFollow(user.id)"
+            >
+              取消追蹤
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              v-else
+              v-on:click.stop.prevent="addFollow(user.id)"
+            >
+              追蹤
+            </button>
+          </p>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
 import NavTabs from "../components/NavTabs.vue";
-import usersAPI from '../apis/users';
-import { Toast } from '../utils/helper';
+import usersAPI from "../apis/users";
+import { Toast } from "../utils/helper";
+import Spinner from "./../components/Spinner";
 
 export default {
   components: {
     NavTabs,
+    Spinner,
   },
   data() {
     return {
       users: [],
+      isLoading: true,
     };
   },
   created() {
@@ -54,6 +61,7 @@ export default {
   },
   methods: {
     async fetchTopUsers() {
+      this.isLoading = true;
       try {
         const { data } = await usersAPI.getTopUsers();
 
@@ -64,20 +72,22 @@ export default {
           FollowerCount: user.FollowerCount,
           isFollowed: user.isFollowed,
         }));
-      } catch (error) {
-        Toast.fire({
-          icon: 'error',
-          title: '無法取得美食達人，請稍後再試',
-        })
-        console.log('error', error);
-      }
 
+        this.isLoading = false;
+      } catch (error) {
+        this.isLoading = false;
+        Toast.fire({
+          icon: "error",
+          title: "無法取得美食達人，請稍後再試",
+        });
+        console.log("error", error);
+      }
     },
     async addFollow(userId) {
       try {
-        const { data } = await usersAPI.addFollow({userId});
-        if (data.status === 'error') {
-          throw new Error(data.message)
+        const { data } = await usersAPI.addFollow({ userId });
+        if (data.status === "error") {
+          throw new Error(data.message);
         }
 
         this.users = this.users.map((user) => {
@@ -93,17 +103,17 @@ export default {
         });
       } catch (error) {
         Toast.fire({
-          icon: 'error',
-          title: '無法追蹤使用者，請稍後再試',
-        })
-        console.log('error', error);
+          icon: "error",
+          title: "無法追蹤使用者，請稍後再試",
+        });
+        console.log("error", error);
       }
     },
     async removeFollow(userId) {
       try {
-        const { data } = await usersAPI.removeFollow({userId});
-        if (data.status === 'error') {
-          throw new Error(data.message)
+        const { data } = await usersAPI.removeFollow({ userId });
+        if (data.status === "error") {
+          throw new Error(data.message);
         }
         this.users = this.users.map((user) => {
           if (user.id === userId) {
@@ -118,10 +128,10 @@ export default {
         });
       } catch (error) {
         Toast.fire({
-          icon: 'error',
-          title: '無法取消追蹤使用者，請稍後再試',
-        })
-        console.log('error', error);
+          icon: "error",
+          title: "無法取消追蹤使用者，請稍後再試",
+        });
+        console.log("error", error);
       }
     },
   },
